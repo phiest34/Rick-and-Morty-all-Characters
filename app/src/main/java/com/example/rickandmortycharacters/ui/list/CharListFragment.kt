@@ -5,46 +5,48 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rickandmortycharacters.R
 import com.example.rickandmortycharacters.ui.list.adapter.CharListAdapter
-import data.network.model.CharacterData
+import data.CharacterRepository
+import data.network.model.CharacterModel
+import data.network.services.ApiService
 
 class CharListFragment : Fragment() {
-    private lateinit var viewModel: CharListViewModel
     private lateinit var viewModelFactory: CharListViewModelFactory
-    private val charHardCoding = listOf(
-        CharacterData("Рик", "https://rickandmortyapi.com/api/character/avatar/1.jpeg"),
-        CharacterData("Морти", "https://rickandmortyapi.com/api/character/avatar/2.jpeg"),
-        CharacterData("Альберт", "https://rickandmortyapi.com/api/character/avatar/3.jpeg"),
-        CharacterData("Дай", "https://rickandmortyapi.com/api/character/avatar/4.jpeg"),
-        CharacterData("Денег", "https://rickandmortyapi.com/api/character/avatar/5.jpeg"),
-        CharacterData("нижний текст", "https://rickandmortyapi.com/api/character/avatar/6.jpeg")
-    )
+    private lateinit var viewModel: CharListViewModel
+    private lateinit var characterModelList: List<CharacterModel>
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModelFactory = CharListViewModelFactory()
+        viewModelFactory = CharListViewModelFactory(CharacterRepository(ApiService))
         viewModel = ViewModelProvider(this, viewModelFactory).get(CharListViewModel::class.java)
+        viewModel.makeApiCall()
         return inflater.inflate(
             R.layout.fragment_characters_list,
             container,
             false
         )
-    }
 
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = CharListAdapter(charHardCoding)
+
+        val adapter = CharListAdapter(ArrayList())
         val recycler = view.findViewById<RecyclerView>(R.id.recycler)
         recycler.adapter = adapter
         recycler.layoutManager = GridLayoutManager(requireContext(), COLUMNS_COUNT)
+
+        viewModel.getCharactersListObserver().observe(viewLifecycleOwner, Observer {
+            adapter.updateData(it)
+        })
 
     }
 

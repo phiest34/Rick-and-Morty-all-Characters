@@ -1,14 +1,14 @@
 package com.example.rickandmortycharacters.ui.list.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rickandmortycharacters.R
-import data.network.model.CharacterData
+import data.network.model.CharacterModel
+import data.network.model.ResultModel
 
-class CharListAdapter(private val charList: List<CharacterData>) :
+class CharListAdapter(private val charList: MutableList<ResultModel>) :
     RecyclerView.Adapter<CharListViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -18,12 +18,18 @@ class CharListAdapter(private val charList: List<CharacterData>) :
     }
 
     override fun onBindViewHolder(holder: CharListViewHolder, position: Int) {
-        Log.i("adapter", " some text ${charList[position].name}")
-        holder.bind(charList[position].name, charList[position].imageUri)
+        holder.bind(charList[position].name, charList[position].image)
     }
 
     override fun getItemCount(): Int {
         return charList.size
     }
+
+    fun updateData(value: List<ResultModel>?) {
+        charList.clear()
+        value?.let {charList.addAll(it) }
+        notifyDataSetChanged()
+    }
+
 
 }
