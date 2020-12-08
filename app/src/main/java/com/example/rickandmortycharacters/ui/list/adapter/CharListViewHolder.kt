@@ -1,6 +1,5 @@
 package com.example.rickandmortycharacters.ui.list.adapter
 
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,7 +12,6 @@ class CharListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val characterImage: ImageView = itemView.findViewById(R.id.character_image)
 
     fun bind(name: String, imageUri: String?) {
-        Log.i("view holder", " some text ${characterName.text}")
         characterName.text = name
         imageUri?.let {
             Glide.with(characterImage.context).load(it).into(characterImage)

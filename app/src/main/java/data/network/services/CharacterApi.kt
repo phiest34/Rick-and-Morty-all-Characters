@@ -5,7 +5,7 @@ import data.network.model.ResultModel
 import retrofit2.http.GET
 
 
-interface CharacterService {
+interface CharacterApi {
     @GET("character")
     suspend fun getCharacters(): ApiListResult<ResultModel>
 }

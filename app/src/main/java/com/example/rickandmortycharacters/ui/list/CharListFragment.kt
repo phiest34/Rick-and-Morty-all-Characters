@@ -5,25 +5,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rickandmortycharacters.R
 import com.example.rickandmortycharacters.ui.list.adapter.CharListAdapter
-import data.CharacterRepository
-import data.network.services.ApiService
+import javax.inject.Inject
 
 class CharListFragment : Fragment() {
-    private lateinit var viewModelFactory: CharListViewModelFactory
-    private lateinit var viewModel: CharListViewModel
+
+    @Inject
+    lateinit var viewModel: CharListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModelFactory = CharListViewModelFactory(CharacterRepository(ApiService))
-        viewModel = ViewModelProvider(this, viewModelFactory).get(CharListViewModel::class.java)
+        // viewModelFactory = CharListViewModelFactory(CharacterRepository(ApiService))
+        // viewModel = ViewModelProvider(this, viewModelFactory).get(CharListViewModel::class.java)
         viewModel.makeApiCall()
         return inflater.inflate(
             R.layout.fragment_characters_list,
