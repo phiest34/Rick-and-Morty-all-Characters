@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rickandmortycharacters.R
-import data.network.model.CharacterModel
 import data.network.model.ResultModel
 
 class CharListAdapter(private val charList: MutableList<ResultModel>) :
@@ -27,9 +26,7 @@ class CharListAdapter(private val charList: MutableList<ResultModel>) :
 
     fun updateData(value: List<ResultModel>?) {
         charList.clear()
-        value?.let {charList.addAll(it) }
+        value?.let { charList.addAll(it) }
         notifyDataSetChanged()
     }
-
-
 }

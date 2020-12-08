@@ -5,20 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rickandmortycharacters.R
 import com.example.rickandmortycharacters.ui.list.adapter.CharListAdapter
 import data.CharacterRepository
-import data.network.model.CharacterModel
 import data.network.services.ApiService
 
 class CharListFragment : Fragment() {
     private lateinit var viewModelFactory: CharListViewModelFactory
     private lateinit var viewModel: CharListViewModel
-    private lateinit var characterModelList: List<CharacterModel>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,7 +41,7 @@ class CharListFragment : Fragment() {
         recycler.adapter = adapter
         recycler.layoutManager = GridLayoutManager(requireContext(), COLUMNS_COUNT)
 
-        viewModel.getCharactersListObserver().observe(viewLifecycleOwner, Observer {
+        viewModel.getCharactersListObserver().observe(viewLifecycleOwner, {
             adapter.updateData(it)
         })
 
