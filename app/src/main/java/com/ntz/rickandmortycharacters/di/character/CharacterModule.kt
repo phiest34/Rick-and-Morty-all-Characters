@@ -8,10 +8,10 @@ import javax.inject.Inject
 
 
 @Module
-class CharacterModule @Inject constructor(private val retrofit: Retrofit) {
+class CharacterModule {
     @Provides
     @CharacterScope
-    fun provideCharacterApi(): CharacterApi {
+    fun provideCharacterApi(retrofit: Retrofit): CharacterApi {
         return retrofit.create(CharacterApi::class.java)
     }
 }

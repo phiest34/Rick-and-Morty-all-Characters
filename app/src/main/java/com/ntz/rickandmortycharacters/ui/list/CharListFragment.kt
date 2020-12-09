@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ntz.rickandmortycharacters.R
@@ -16,13 +17,16 @@ class CharListFragment : Fragment() {
     @Inject
     lateinit var viewModel: CharListViewModel
 
+    @Inject
+    lateinit var viewModelFactory: CharListViewModelFactory
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // viewModelFactory = CharListViewModelFactory(CharacterRepository(ApiService))
-        // viewModel = ViewModelProvider(this, viewModelFactory).get(CharListViewModel::class.java)
+        viewModelFactory = CharListViewModelFactory()
+        viewModel = ViewModelProvider(this, viewModelFactory).get(CharListViewModel::class.java)
         viewModel.makeApiCall()
         return inflater.inflate(
             R.layout.fragment_characters_list,
