@@ -6,10 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.paging.DataSource
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ntz.rickandmortycharacters.App
 import com.ntz.rickandmortycharacters.R
+import com.ntz.rickandmortycharacters.data.network.PagedListProvider
+import com.ntz.rickandmortycharacters.data.network.model.CharacterDataSourceFactory
+import com.ntz.rickandmortycharacters.data.network.model.ResultModel
 import com.ntz.rickandmortycharacters.ui.list.adapter.CharListAdapter
+import com.ntz.rickandmortycharacters.utils.Constants.COLUMNS_COUNT
 import javax.inject.Inject
 
 class CharListFragment : Fragment() {
@@ -20,14 +27,20 @@ class CharListFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: CharListViewModelFactory
 
+    lateinit var paginationViewModel: CharListPaginationViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModelFactory = CharListViewModelFactory()
-        viewModel = ViewModelProvider(this, viewModelFactory).get(CharListViewModel::class.java)
-        viewModel.makeApiCall()
+        paginationViewModel =
+            CharListPaginationViewModelFactory(CharacterDataSourceFactory(App().factory)).create(
+                CharListPaginationViewModel::class.java
+            )
+//        viewModelFactory = CharListViewModelFactory()
+//        viewModel = ViewModelProvider(this, viewModelFactory).get(CharListViewModel::class.java)
+//        viewModel.makeApiCall()
         return inflater.inflate(
             R.layout.fragment_characters_list,
             container,
@@ -39,18 +52,14 @@ class CharListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = CharListAdapter(ArrayList())
+        val adapter = CharListAdapter(PaginationItemCallback, ArrayList())
         val recycler = view.findViewById<RecyclerView>(R.id.recycler)
         recycler.adapter = adapter
         recycler.layoutManager = GridLayoutManager(requireContext(), COLUMNS_COUNT)
 
-        viewModel.getCharactersListObserver().observe(viewLifecycleOwner, {
-            adapter.updateData(it)
+        paginationViewModel.pagedListData.observe(viewLifecycleOwner, {
+            adapter.submitList(it)
         })
 
-    }
-
-    companion object {
-        private const val COLUMNS_COUNT = 2
     }
 }
