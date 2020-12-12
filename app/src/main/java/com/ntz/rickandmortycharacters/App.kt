@@ -11,14 +11,15 @@ import timber.log.Timber
 class App : Application() {
     companion object {
         lateinit var appComponent: ApplicationGraph
+        lateinit var factory: DataSource.Factory<Int, ResultModel?>
     }
 
-     var factory: DataSource.Factory<Int, ResultModel?> = CharacterDataSource.factory()
 
     override fun onCreate() {
         super.onCreate()
+        factory = CharacterDataSource.factory()
         appComponent = DaggerApplicationGraph
-            .builder()
+                .builder()
             .build()
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())

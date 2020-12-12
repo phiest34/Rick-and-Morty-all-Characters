@@ -1,6 +1,7 @@
 package com.ntz.rickandmortycharacters.ui.list
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.ntz.rickandmortycharacters.data.network.model.CharacterDataSourceFact
 import com.ntz.rickandmortycharacters.data.network.model.ResultModel
 import com.ntz.rickandmortycharacters.ui.list.adapter.CharListAdapter
 import com.ntz.rickandmortycharacters.utils.Constants.COLUMNS_COUNT
+import timber.log.Timber
 import javax.inject.Inject
 
 class CharListFragment : Fragment() {
@@ -34,8 +36,9 @@ class CharListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Timber.i("ON CREATE VIEW ")
         paginationViewModel =
-            CharListPaginationViewModelFactory(CharacterDataSourceFactory(App().factory)).create(
+            CharListPaginationViewModelFactory(CharacterDataSourceFactory(App.factory)).create(
                 CharListPaginationViewModel::class.java
             )
 //        viewModelFactory = CharListViewModelFactory()
@@ -60,6 +63,6 @@ class CharListFragment : Fragment() {
         paginationViewModel.pagedListData.observe(viewLifecycleOwner, {
             adapter.submitList(it)
         })
-
+        Timber.i("DATA: ${paginationViewModel.pagedListData.value} ")
     }
 }

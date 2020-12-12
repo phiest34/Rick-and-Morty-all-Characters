@@ -30,10 +30,4 @@ class CharListAdapter(
     override fun getItemCount(): Int {
         return charList.size
     }
-
-    fun updateData(value: List<ResultModel>?) {
-        charList.clear()
-        value?.let { charList.addAll(it) }
-        notifyDataSetChanged()
-    }
 }
