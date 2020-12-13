@@ -14,6 +14,13 @@ class MainActivity : AppCompatActivity(), ConnectingFragment.ConnectListener {
                 .beginTransaction()
                 .replace(R.id.root, ConnectingFragment())
                 .commit()
+        if (savedInstanceState != null) {
+            supportFragmentManager
+                    .beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.root, CharListFragment())
+                    .commit()
+        }
     }
     override fun onConnectPressed() {
         supportFragmentManager

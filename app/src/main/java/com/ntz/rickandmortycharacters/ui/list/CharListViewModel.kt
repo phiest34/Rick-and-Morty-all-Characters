@@ -1,5 +1,6 @@
 package com.ntz.rickandmortycharacters.ui.list
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ntz.rickandmortycharacters.App
@@ -17,6 +18,7 @@ class CharListViewModel : ViewModel() {
 
     init {
         App.appComponent.inject(CharacterModule()).inject(this)
+        Log.i("CharListViewModel", "CharListViewModel created!")
     }
 
     fun getCharactersListObserver(): MutableLiveData<List<ResultModel>> {
@@ -25,6 +27,7 @@ class CharListViewModel : ViewModel() {
 
     fun makeApiCall() {
         CoroutineScope(Dispatchers.IO).launch {
+            Log.i("CharListViewModel", "printStackTrace")
             try {
                 val list = dataSource.getCharacters().results
                 characters.postValue(list)
