@@ -12,6 +12,8 @@ class CharacterDataSourceFactory(
     private val factory: DataSource.Factory<Int, ResultModel?>
 ) :
     PagedListProvider<ResultModel?> {
+
+
     override fun provide(): LiveData<PagedList<ResultModel?>> {
         return LivePagedListBuilder(
             factory, PagedList.Config.Builder()

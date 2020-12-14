@@ -5,12 +5,14 @@ import androidx.paging.PageKeyedDataSource
 import com.ntz.rickandmortycharacters.data.network.services.CharacterRepository
 import com.ntz.rickandmortycharacters.utils.Constants.FIRST_PAGE
 import com.ntz.rickandmortycharacters.utils.Constants.SECOND_PAGE
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
-class CharacterDataSource(private val dataSource: CharacterRepository) :
+class CharacterDataSource constructor(private val repository: CharacterRepository) :
     PageKeyedDataSource<Int, ResultModel>() {
+
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, ResultModel?>
@@ -19,11 +21,10 @@ class CharacterDataSource(private val dataSource: CharacterRepository) :
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val characters = dataSource.getCharacterWithPaging(FIRST_PAGE).results
-                Timber.i("characters data: ${characters}")
-                callback.onResult(characters, null, SECOND_PAGE)
-            } catch (t: Throwable)
-            {
+                val characters = repository.getCharacterWithPaging(FIRST_PAGE)
+                Timber.i("characters data: $characters")
+                callback.onResult(characters.results, null, SECOND_PAGE)
+            } catch (t: Throwable) {
                 t.printStackTrace()
             }
         }
@@ -32,7 +33,7 @@ class CharacterDataSource(private val dataSource: CharacterRepository) :
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, ResultModel?>) {
         Timber.d("callback load loadBefore")
         CoroutineScope(Dispatchers.IO).launch {
-            val characters = dataSource.getCharacterWithPaging(page = params.key)
+            val characters = repository.getCharacterWithPaging(page = params.key)
             Timber.i("callback load loadBefore")
             callback.onResult(characters.results, params.key.inc())
         }
@@ -40,14 +41,15 @@ class CharacterDataSource(private val dataSource: CharacterRepository) :
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, ResultModel?>) {
         CoroutineScope(Dispatchers.IO).launch {
-            val characters = dataSource.getCharacterWithPaging(page = params.key)
+            val characters = repository.getCharacterWithPaging(page = params.key)
             callback.onResult(characters.results, params.key.dec())
         }
     }
 
     companion object {
-        fun factory() = object : DataSource.Factory<Int, ResultModel?>() {
-            override fun create() = CharacterDataSource(CharacterRepository())
+        fun factory(repository: CharacterRepository) = object : DataSource.Factory<Int, ResultModel?>() {
+
+            override fun create() = CharacterDataSource(repository)
         }
     }
 }
