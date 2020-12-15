@@ -15,7 +15,7 @@ class CharacterDataSource constructor(private val repository: CharacterRepositor
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
-        callback: LoadInitialCallback<Int, ResultModel?>
+        callback: LoadInitialCallback<Int, ResultModel>
     ) {
         Timber.i("callback load initial")
 
@@ -29,26 +29,36 @@ class CharacterDataSource constructor(private val repository: CharacterRepositor
         }
     }
 
-    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, ResultModel?>) {
-        Timber.d("callback load loadBefore")
+    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, ResultModel>) {
+        Timber.d("callback load Before")
         CoroutineScope(Dispatchers.IO).launch {
-            val characters = repository.getCharacterWithPaging(page = params.key)
-            Timber.i("callback load loadBefore")
-            callback.onResult(characters.results, params.key.inc())
+            try {
+                val characters = repository.getCharacterWithPaging(page = params.key)
+                callback.onResult(characters.results, params.key.inc())
+            } catch (t: Throwable) {
+                t.printStackTrace()
+            }
+
         }
     }
 
-    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, ResultModel?>) {
+    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, ResultModel>) {
         CoroutineScope(Dispatchers.IO).launch {
-            val characters = repository.getCharacterWithPaging(page = params.key)
-            callback.onResult(characters.results, params.key.dec())
+            try {
+                val characters = repository.getCharacterWithPaging(page = params.key)
+                callback.onResult(characters.results, params.key.dec())
+            } catch (t: Throwable) {
+                t.printStackTrace()
+            }
+
         }
     }
 
     companion object {
-        fun factory(repository: CharacterRepository) = object : DataSource.Factory<Int, ResultModel?>() {
+        fun factory(repository: CharacterRepository) =
+            object : DataSource.Factory<Int, ResultModel?>() {
 
-            override fun create() = CharacterDataSource(repository)
-        }
+                override fun create() = CharacterDataSource(repository)
+            }
     }
 }

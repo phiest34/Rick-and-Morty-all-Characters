@@ -13,8 +13,7 @@ import com.ntz.rickandmortycharacters.data.network.model.ResultModel
 import com.ntz.rickandmortycharacters.ui.list.PaginationItemCallback
 
 class CharListAdapter(
-    diffCallBack: DiffUtil.ItemCallback<ResultModel?> = PaginationItemCallback,
-    private val charList: LiveData<PagedList<ResultModel?>>
+    diffCallBack: DiffUtil.ItemCallback<ResultModel> = PaginationItemCallback,
 ) : PagedListAdapter<ResultModel, CharListViewHolder>(diffCallBack) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharListViewHolder {
@@ -25,13 +24,10 @@ class CharListAdapter(
     }
 
     override fun onBindViewHolder(holder: CharListViewHolder, position: Int) {
-        holder.bind(charList.value?.get(position)?.name, charList.value?.get(position)?.image)
+        holder.bind(getItem(position)?.name, getItem(position)?.image)
     }
 
     override fun getItemCount(): Int {
-        if (charList.value == null) {
-            return 0
-        }
-        return charList.value!!.size
+        return super.getItemCount()
     }
 }

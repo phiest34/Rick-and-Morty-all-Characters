@@ -49,7 +49,7 @@ class CharListFragment : Fragment() {
             CharListPaginationViewModelFactory(characterDataSourceFactory).create(
                 CharListPaginationViewModel::class.java
             )
-        val adapter = CharListAdapter(PaginationItemCallback, paginationViewModel.pagedListData)
+        val adapter = CharListAdapter(PaginationItemCallback)
         val recycler = view.findViewById<RecyclerView>(R.id.recycler)
         recycler.adapter = adapter
         recycler.layoutManager = GridLayoutManager(requireContext(), COLUMNS_COUNT)
