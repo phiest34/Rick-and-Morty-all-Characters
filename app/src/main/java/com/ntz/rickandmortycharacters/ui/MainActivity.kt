@@ -10,10 +10,23 @@ class MainActivity : AppCompatActivity(), ConnectingFragment.ConnectListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        showInitScreen()
+        showCharacterList(savedInstanceState)
+    }
+    private fun showInitScreen() {
         supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.root, ConnectingFragment())
+            .commit()
+    }
+    private fun showCharacterList(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.root, ConnectingFragment())
+                .addToBackStack(null)
+                .replace(R.id.root, CharListFragment())
                 .commit()
+        }
     }
     override fun onConnectPressed() {
         supportFragmentManager
