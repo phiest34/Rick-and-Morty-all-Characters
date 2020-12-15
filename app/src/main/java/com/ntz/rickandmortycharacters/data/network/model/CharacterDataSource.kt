@@ -22,7 +22,6 @@ class CharacterDataSource constructor(private val repository: CharacterRepositor
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val characters = repository.getCharacterWithPaging(FIRST_PAGE)
-                Timber.i("characters data: $characters")
                 callback.onResult(characters.results, null, SECOND_PAGE)
             } catch (t: Throwable) {
                 t.printStackTrace()

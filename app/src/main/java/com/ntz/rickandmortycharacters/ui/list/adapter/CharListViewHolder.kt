@@ -11,7 +11,7 @@ class CharListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val characterName: TextView = itemView.findViewById(R.id.character_name)
     private val characterImage: ImageView = itemView.findViewById(R.id.character_image)
 
-    fun bind(name: String, imageUri: String?) {
+    fun bind(name: String?, imageUri: String?) {
         characterName.text = name
         imageUri?.let {
             Glide.with(characterImage.context).load(it).into(characterImage)

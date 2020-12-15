@@ -7,6 +7,5 @@ import com.ntz.rickandmortycharacters.data.network.model.ResultModel
 class CharListPaginationViewModel(
     pagedListProvider: PagedListProvider<ResultModel?>
 ) : ViewModel() {
-
     val pagedListData = pagedListProvider.provide()
 }

@@ -3,6 +3,8 @@ package com.ntz.rickandmortycharacters.ui.list.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
+import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -11,11 +13,10 @@ import com.ntz.rickandmortycharacters.data.network.model.ResultModel
 import com.ntz.rickandmortycharacters.ui.list.PaginationItemCallback
 
 class CharListAdapter(
-
     diffCallBack: DiffUtil.ItemCallback<ResultModel?> = PaginationItemCallback,
-    private val charList: MutableList<ResultModel>
-
+    private val charList: LiveData<PagedList<ResultModel?>>
 ) : PagedListAdapter<ResultModel, CharListViewHolder>(diffCallBack) {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val layout: View = inflater.inflate(R.layout.item_fragment, parent, false)
@@ -24,10 +25,13 @@ class CharListAdapter(
     }
 
     override fun onBindViewHolder(holder: CharListViewHolder, position: Int) {
-        holder.bind(charList[position].name, charList[position].image)
+        holder.bind(charList.value?.get(position)?.name, charList.value?.get(position)?.image)
     }
 
     override fun getItemCount(): Int {
-        return charList.size
+        if (charList.value == null) {
+            return 0
+        }
+        return charList.value!!.size
     }
 }

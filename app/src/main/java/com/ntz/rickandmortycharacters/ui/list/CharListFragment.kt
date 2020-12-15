@@ -5,12 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ntz.rickandmortycharacters.App
 import com.ntz.rickandmortycharacters.R
 import com.ntz.rickandmortycharacters.data.network.model.CharacterDataSource
 import com.ntz.rickandmortycharacters.data.network.model.CharacterDataSourceFactory
+import com.ntz.rickandmortycharacters.data.network.model.ResultModel
 import com.ntz.rickandmortycharacters.di.character.CharacterModule
 import com.ntz.rickandmortycharacters.ui.list.adapter.CharListAdapter
 import com.ntz.rickandmortycharacters.utils.Constants.COLUMNS_COUNT
@@ -33,13 +35,6 @@ class CharListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Timber.i("ON CREATE VIEW ")
-
-        paginationViewModel =
-            CharListPaginationViewModelFactory(characterDataSourceFactory).create(
-                CharListPaginationViewModel::class.java
-            )
-
         return inflater.inflate(
             R.layout.fragment_characters_list,
             container,
@@ -50,8 +45,11 @@ class CharListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val adapter = CharListAdapter(PaginationItemCallback, ArrayList())
+        paginationViewModel =
+            CharListPaginationViewModelFactory(characterDataSourceFactory).create(
+                CharListPaginationViewModel::class.java
+            )
+        val adapter = CharListAdapter(PaginationItemCallback, paginationViewModel.pagedListData)
         val recycler = view.findViewById<RecyclerView>(R.id.recycler)
         recycler.adapter = adapter
         recycler.layoutManager = GridLayoutManager(requireContext(), COLUMNS_COUNT)
@@ -59,6 +57,5 @@ class CharListFragment : Fragment() {
         paginationViewModel.pagedListData.observe(viewLifecycleOwner, {
             adapter.submitList(it)
         })
-        Timber.i("DATA: ${paginationViewModel.pagedListData.value} ")
     }
 }
